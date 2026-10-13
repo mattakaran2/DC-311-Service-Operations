@@ -1,0 +1,8 @@
+.Rhistory
+.RData
+.Rproj.user/
+.DS_Store
+/outputs/
+data/processed/*.rds
+data/raw/*
+!data/raw/.gitkeep
