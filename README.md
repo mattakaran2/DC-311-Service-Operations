@@ -46,10 +46,6 @@ This exports the cleaned request fields to a temporary CSV, loads them into a te
 
 See [`powerbi/README.md`](powerbi/README.md) for the Power BI report layout and [`powerbi/measures.dax`](powerbi/measures.dax) for DAX measures. These files are a reproducible Power BI handoff; a `.pbix` still needs to be assembled and saved in Power BI Desktop.
 
-## Metrics and interview preparation
-
-[`METRICS_INTERVIEW_GUIDE.md`](METRICS_INTERVIEW_GUIDE.md) documents every dashboard/SQL metric, its denominator, observed full-year value, data caveats, and likely interview questions with answer outlines.
-
 ## Data source and license
 
 District of Columbia, Office of Unified Communications, [311 City Service Requests in 2025](https://catalog.data.gov/dataset/311-city-service-requests-in-2025). The dataset is public and listed under the [Creative Commons Attribution 4.0 license](https://creativecommons.org/licenses/by/4.0/). The source data can change; rerun the preparation and SQL steps before quoting updated results.
@@ -75,5 +71,4 @@ scripts/run_sql.sh            Reproducible SQLite import and Power BI exports
 scripts/export_sql_input.R    Safe request-level SQL input export
 sql/                          Overall, monthly, service, and ward queries
 powerbi/                      Aggregated exports, DAX measures, and report guide
-METRICS_INTERVIEW_GUIDE.md    Definitions, values, and interview preparation
 ```
