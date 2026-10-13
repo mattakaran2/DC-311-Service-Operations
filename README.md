@@ -11,6 +11,18 @@ An interactive R Shiny and SQL analysis of DC 311 service-request volume, resolu
 - One source spelling variant split the solid-waste service type into two labels. Grouping `Admistration` with `Administration` combines them into **231,075 requests (52.5%)**. The original source label remains available for audit.
 - Among service types with at least 100 resolved requests, SIOD has the longest median turnaround (**103 days**, P90 **328 days**, n = **1,171**). This is a prompt for operational follow-up, not evidence of a cause.
 
+## Project walkthrough
+
+**Question:** Where is DC 311 request demand concentrated, and what patterns in resolution time and due-date performance deserve operational follow-up?
+
+**Analysis decisions:** I treat each distinct request as one record and group trends by the date it was opened. Because resolution times have a long right tail, I show the median and upper percentiles instead of relying on an average. Due-date performance includes only resolved requests with both dates; the source due date is not assumed to be a validated SLA. I normalize one documented service-label spelling variant, preserve the original value for traceability, and keep ward comparisons descriptive rather than population-adjusted.
+
+**What the dashboard shows:** Demand is concentrated in the solid-waste service group (52.5% of requests). Typical turnaround is 3 calendar days, while the P90 is 18 days and P99 is 209 days, indicating a small but substantial long tail. 90.41% of eligible resolved requests were completed on or before their source due date. July had the most requests in this one-year extract; that alone does not establish a recurring seasonal pattern.
+
+**How to interpret it:** These results identify segments to investigate with service owners. They do not explain delays, establish agency performance, or measure resident need. A next analysis should validate the due-date meaning and add reliable request complexity or priority fields before drawing operational conclusions.
+
+**Walkthrough path:** Start on Overview for scale and headline KPIs, open Findings for the observed patterns, use Turnaround to inspect the long tail and service differences, then use Ward view for descriptive geography. Definitions documents the metric rules and limitations.
+
 ## Run the Shiny dashboard
 
 1. Install R 4.1 or newer.
@@ -33,6 +45,17 @@ An interactive R Shiny and SQL analysis of DC 311 service-request volume, resolu
    ```
 
 The source CSV is large. The refresh script reads only the fields used by the analysis and excludes address, free-text details, names, and precise coordinates. The raw download and prepared request-level RDS are local generated files and are excluded from Git.
+
+## Deploy the Shiny app
+
+The app can be deployed to [shinyapps.io](https://www.shinyapps.io/). First prepare the local RDS using the refresh steps above, then install `rsconnect` and connect your own shinyapps.io account from R:
+
+```r
+install.packages("rsconnect")
+rsconnect::deployApp(appDir = ".", appName = "dc-311-service-operations")
+```
+
+Configure your account token and secret locally using the command provided in your shinyapps.io account. Do not add credentials to this repository. `.rscignore` keeps the 161 MB raw download out of the deployment bundle while retaining the prepared 2 MB analysis file. A live deployment link will be added here after deployment succeeds.
 
 ## Reproduce the SQL and Power BI exports
 

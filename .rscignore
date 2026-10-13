@@ -1,0 +1,7 @@
+.git/
+.Rhistory
+.RData
+.DS_Store
+outputs/
+data/raw/
+METRICS_INTERVIEW_GUIDE.md
