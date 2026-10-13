@@ -17,7 +17,7 @@ An interactive R Shiny and SQL analysis of DC 311 service-request volume, resolu
 
 **Analysis decisions:** I treat each distinct request as one record and group trends by the date it was opened. Because resolution times have a long right tail, I show the median and upper percentiles instead of relying on an average. Due-date performance includes only resolved requests with both dates; the source due date is not assumed to be a validated SLA. I normalize one documented service-label spelling variant, preserve the original value for traceability, and keep ward comparisons descriptive rather than population-adjusted.
 
-**What the dashboard shows:** Demand is concentrated in the solid-waste service group (52.5% of requests). Typical turnaround is 3 calendar days, while the P90 is 18 days and P99 is 209 days, indicating a small but substantial long tail. 90.41% of eligible resolved requests were completed on or before their source due date. July had the most requests in this one-year extract; that alone does not establish a recurring seasonal pattern.
+**What the dashboard shows:** The findings above highlight demand concentration, a long turnaround tail, and a within-year peak in July. The dashboard lets a reviewer inspect those patterns across service types and wards.
 
 **How to interpret it:** These results identify segments to investigate with service owners. They do not explain delays, establish agency performance, or measure resident need. A next analysis should validate the due-date meaning and add reliable request complexity or priority fields before drawing operational conclusions.
 
@@ -55,7 +55,7 @@ install.packages("rsconnect")
 rsconnect::deployApp(appDir = ".", appName = "dc-311-service-operations")
 ```
 
-Configure your account token and secret locally using the command provided in your shinyapps.io account. Do not add credentials to this repository. `.rscignore` keeps the 161 MB raw download out of the deployment bundle while retaining the prepared 2 MB analysis file. A live deployment link will be added here after deployment succeeds.
+Configure your account token and secret locally using the command provided in your shinyapps.io account. Do not add credentials to this repository. `.rscignore` keeps the 161 MB raw download out of the deployment bundle while retaining the prepared 2 MB analysis file.
 
 ## Reproduce the SQL and Power BI exports
 
