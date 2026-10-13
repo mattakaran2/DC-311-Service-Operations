@@ -15,9 +15,14 @@ prepare_requests <- function(raw) {
   resolution_date <- parse_arcgis_date(raw$RESOLUTIONDATE)
   due_date <- parse_arcgis_date(raw$SERVICEDUEDATE)
 
+  source_service_type <- ifelse(is.na(raw$SERVICETYPECODEDESCRIPTION) | raw$SERVICETYPECODEDESCRIPTION == "", "Unspecified", as.character(raw$SERVICETYPECODEDESCRIPTION))
+  # The source contains this spelling variant; retain it for audit and group it with the intended label.
+  service_type <- gsub("Admistration", "Administration", source_service_type, fixed = TRUE)
+
   data.frame(
     request_id = as.character(raw$SERVICEREQUESTID),
-    service_type = ifelse(is.na(raw$SERVICETYPECODEDESCRIPTION) | raw$SERVICETYPECODEDESCRIPTION == "", "Unspecified", as.character(raw$SERVICETYPECODEDESCRIPTION)),
+    service_type_source = source_service_type,
+    service_type = service_type,
     request_date = as.Date(add_date, tz = "UTC"),
     resolution_date = as.Date(resolution_date, tz = "UTC"),
     due_date = as.Date(due_date, tz = "UTC"),

@@ -1,76 +1,79 @@
 # DC 311 Service Operations Dashboard
 
-An interactive R Shiny dashboard exploring service-request demand, resolution times, and due-date performance for requests opened in Washington, DC during 2025. The project is designed as a business intelligence portfolio piece: it turns an operational dataset into metrics and comparisons a service manager or analyst can explore.
+An interactive R Shiny and SQL analysis of DC 311 service-request volume, resolution times, and due-date performance for requests opened in 2025. The project frames public-service requests as an operations and business-intelligence problem: where is demand concentrated, and where should an analyst investigate turnaround patterns?
 
-## Questions
+## Findings from the 2025 extract
 
-- Which 311 service types generate the most requests?
-- How does request volume change by month?
-- How does typical turnaround differ across service types and wards?
-- Among resolved requests with a recorded due date, what share was completed by that date?
+- The source contains **440,562 distinct requests** opened during 2025. **436,766 (99.14%)** have a resolution date in this extract.
+- Median turnaround is **3 calendar days**; the 90th percentile is **18 days**. The 99th percentile is 209 days, showing a long tail that the median alone would hide.
+- **394,871 of 436,760** resolved requests with both dates were resolved on or before the source due date (**90.41%**). This is a due-date measure, not a verified contractual SLA.
+- July had the most requests (**45,137**); December had the fewest (**26,378**). One year is not enough to establish a recurring seasonal pattern.
+- One source spelling variant split the solid-waste service type into two labels. Grouping `Admistration` with `Administration` combines them into **231,075 requests (52.5%)**. The original source label remains available for audit.
+- Among service types with at least 100 resolved requests, SIOD has the longest median turnaround (**103 days**, P90 **328 days**, n = **1,171**). This is a prompt for operational follow-up, not evidence of a cause.
 
-## Run it locally
+## Run the Shiny dashboard
 
 1. Install R 4.1 or newer.
-2. Install the required packages:
+2. Install the R packages:
 
    ```r
    install.packages(c("shiny", "bslib", "dplyr", "ggplot2", "lubridate", "scales", "jsonlite"))
    ```
 
-3. From the repository folder, download and prepare the data:
+3. From the repository folder, download and prepare the source data:
 
    ```sh
    Rscript scripts/refresh_data.R
    ```
 
-4. Start the app in R:
+4. Open `dc-311-service-operations.Rproj` in RStudio, then run:
 
    ```r
    shiny::runApp()
    ```
 
-The data refresh script requests only the columns needed by the dashboard. It does not request street addresses, free-text details, inspector names, or precise coordinates. The downloaded processed file is ignored by Git because it can be regenerated.
+The source CSV is large. The refresh script reads only the fields used by the analysis and excludes address, free-text details, names, and precise coordinates. The raw download and prepared request-level RDS are local generated files and are excluded from Git.
 
-## Publish to GitHub
+## Reproduce the SQL and Power BI exports
 
-Create an empty repository on GitHub, then run these commands from this folder (replace the URL with your repository URL):
+After preparing the data, run:
 
 ```sh
-git add .
-git commit -m "Build DC 311 service operations dashboard"
-git branch -M main
-git remote add origin https://github.com/YOUR-USERNAME/dc-311-service-operations.git
-git push -u origin main
+bash scripts/run_sql.sh
 ```
 
-The 175 MB source CSV and generated RDS file are excluded from Git. Include a screenshot of the running app in the repository after you review the dashboard.
+This exports the cleaned request fields to a temporary CSV, loads them into a temporary SQLite database, runs the SQL in `sql/`, and writes four aggregated CSVs to `powerbi/exports/`. The temporary request-level export and database are removed when the command finishes. The aggregated outputs are small and contain no exact locations or free text.
 
-## Data source
+See [`powerbi/README.md`](powerbi/README.md) for the Power BI report layout and [`powerbi/measures.dax`](powerbi/measures.dax) for DAX measures. These files are a reproducible Power BI handoff; a `.pbix` still needs to be assembled and saved in Power BI Desktop.
 
-District of Columbia, Office of Unified Communications, [311 City Service Requests in 2025](https://catalog.data.gov/dataset/311-city-service-requests-in-2025). The dataset is public and listed under the [Creative Commons Attribution 4.0 license](https://creativecommons.org/licenses/by/4.0/). The ArcGIS layer endpoint is used by `scripts/refresh_data.R`.
+## Metrics and interview preparation
 
-## Metric definitions
+[`METRICS_INTERVIEW_GUIDE.md`](METRICS_INTERVIEW_GUIDE.md) documents every dashboard/SQL metric, its denominator, observed full-year value, data caveats, and likely interview questions with answer outlines.
 
-- **Requests:** distinct request identifiers with an opening date in calendar year 2025.
-- **Resolved share:** records with a resolution date divided by filtered records.
-- **Turnaround:** elapsed calendar days from the opening date to the resolution date. Negative durations are excluded from turnaround summaries.
-- **Met due date:** resolved requests whose resolution date is on or before the source due date, among records with both dates.
-- **Ward:** ward as recorded in the source. Ward request totals are not adjusted for population.
+## Data source and license
 
-## Limitations
+District of Columbia, Office of Unified Communications, [311 City Service Requests in 2025](https://catalog.data.gov/dataset/311-city-service-requests-in-2025). The dataset is public and listed under the [Creative Commons Attribution 4.0 license](https://creativecommons.org/licenses/by/4.0/). The source data can change; rerun the preparation and SQL steps before quoting updated results.
 
-These measures describe the fields published in the source; they do not establish why requests take longer or whether a particular agency caused a delay. Open requests and missing dates affect resolution summaries. A source due date is treated as an operational target, not an independently verified service-level agreement. Request volume is not a measure of resident need, service quality, or agency effort. Category and ward comparisons should be interpreted descriptively.
+## Metric and data-quality decisions
 
-## Project structure
+- **Resolved share:** records with a resolution date divided by all filtered requests.
+- **Turnaround:** resolution date minus opening date in calendar days. Missing and negative durations are excluded; same-day resolutions equal zero days.
+- **P90:** nearest-rank 90th percentile in SQL. The displayed histogram omits values above the 99th percentile for readability; summary metrics use the full nonnegative distribution.
+- **Due-date compliance:** resolved requests on or before the source due date divided by resolved requests with both dates. Missing-date records are excluded from this denominator.
+- **Service comparisons:** turnaround charts require at least 100 resolved requests in each displayed group. This is a display stability threshold, not a statistical significance test.
+- **Ward comparisons:** counts are not adjusted for population or request mix.
+- **Label normalization:** only the known `Admistration` spelling variant is mapped to `Administration`; no fuzzy matching is used.
+- **Interpretation:** observed group differences guide follow-up questions but do not prove causation, agency responsibility, or service quality.
+
+## Repository structure
 
 ```text
-app.R                  Shiny interface and dashboard calculations
-R/data_prep.R          Reusable date parsing and cleaning logic
-scripts/refresh_data.R Paginated download and local data preparation
-data/                  Local generated data (excluded from Git)
+app.R                         Shiny dashboard
+R/data_prep.R                 Date parsing, label normalization, and cleaning
+scripts/refresh_data.R        Public source download and local data preparation
+scripts/run_sql.sh            Reproducible SQLite import and Power BI exports
+scripts/export_sql_input.R    Safe request-level SQL input export
+sql/                          Overall, monthly, service, and ward queries
+powerbi/                      Aggregated exports, DAX measures, and report guide
+METRICS_INTERVIEW_GUIDE.md    Definitions, values, and interview preparation
 ```
-
-## Skills demonstrated
-
-R data cleaning, date handling, metric definition, exploratory analysis, interactive dashboard design, data sourcing, and reproducible project documentation.

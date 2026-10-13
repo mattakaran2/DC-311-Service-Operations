@@ -1,0 +1,42 @@
+-- Add these measures to the matching imported summary table in Power BI.
+
+-- Overall Summary
+Total Requests = SUM('overall_summary'[total_requests])
+Resolved Requests = SUM('overall_summary'[resolved_requests])
+Resolved Share = DIVIDE([Resolved Requests], [Total Requests])
+Due-Date Eligible Requests = SUM('overall_summary'[due_date_eligible_requests])
+On-Time Requests = SUM('overall_summary'[on_time_requests])
+Due-Date Compliance = DIVIDE([On-Time Requests], [Due-Date Eligible Requests])
+Median Turnaround Days = SELECTEDVALUE('overall_summary'[median_turnaround_days])
+P90 Turnaround Days = SELECTEDVALUE('overall_summary'[p90_turnaround_days])
+
+-- Monthly Summary (use these measures with request_month on the axis)
+Monthly Requests = SUM('monthly_summary'[total_requests])
+Monthly Resolved Share = DIVIDE(
+    SUM('monthly_summary'[resolved_requests]),
+    SUM('monthly_summary'[total_requests])
+)
+Monthly Due-Date Compliance = DIVIDE(
+    SUM('monthly_summary'[on_time_requests]),
+    SUM('monthly_summary'[due_date_eligible_requests])
+)
+
+-- Service and Ward summaries: use numerator/denominator measures, not averaged rates.
+Service Requests = SUM('service_summary'[total_requests])
+Service Resolved Share = DIVIDE(
+    SUM('service_summary'[resolved_requests]),
+    SUM('service_summary'[total_requests])
+)
+Service Due-Date Compliance = DIVIDE(
+    SUM('service_summary'[on_time_requests]),
+    SUM('service_summary'[due_date_eligible_requests])
+)
+Service Median Turnaround Days = SELECTEDVALUE('service_summary'[median_turnaround_days])
+Service P90 Turnaround Days = SELECTEDVALUE('service_summary'[p90_turnaround_days])
+Ward Requests = SUM('ward_summary'[total_requests])
+Ward Due-Date Compliance = DIVIDE(
+    SUM('ward_summary'[on_time_requests]),
+    SUM('ward_summary'[due_date_eligible_requests])
+)
+Ward Median Turnaround Days = SELECTEDVALUE('ward_summary'[median_turnaround_days])
+Ward P90 Turnaround Days = SELECTEDVALUE('ward_summary'[p90_turnaround_days])

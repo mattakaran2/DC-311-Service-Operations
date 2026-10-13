@@ -1,0 +1,24 @@
+service_type,total_requests,resolved_requests,resolved_share_pct,median_turnaround_days,p90_turnaround_days,due_date_eligible_requests,on_time_requests,due_date_compliance_pct,meets_minimum_sample_100
+"SWMA- Solid Waste Management Administration",231075,230796,99.88,6.0,19.0,230795,199363,86.38,1
+"PEMA- Parking Enforcement Management Administration",89235,89205,99.97,0.0,1.0,89205,87850,98.48,1
+Unspecified,22865,22025,96.33,3.0,195.0,22020,18050,81.97,1
+"311- Call Center",19595,19588,99.96,0.0,0.0,19588,19588,100.0,1
+"Urban Forrestry",18539,18100,97.63,1.0,140.0,18100,17316,95.67,1
+"DOH- Department Of Health",17222,16684,96.88,1.0,5.0,16684,16107,96.54,1
+"Toa- Trans Sys Mnt",9397,9371,99.72,0.0,3.0,9371,8441,90.08,1
+"Toa-Street & Bridge Maintenance",7848,7153,91.14,3.0,182.0,7153,6827,95.44,1
+"Transportation Operations Administration",7277,7204,99.0,1.0,31.0,7204,6429,89.24,1
+"Driver Vehicle Services",5124,5109,99.71,9.0,11.0,5109,5082,99.47,1
+"Department of Buildings (DOB)",3919,3676,93.8,8.0,21.0,3676,2380,64.74,1
+"Department of Transportation",2767,2763,99.86,0.0,42.0,2763,2551,92.33,1
+SIOD,1672,1171,70.04,103.0,328.0,1171,1095,93.51,1
+"Serve DC",1529,1529,100.0,0.0,0.0,1529,1529,100.0,1
+"Adjudication Services",1083,1081,99.82,9.0,11.0,1081,1072,99.17,1
+"Department of Energy and Environment",655,655,100.0,5.0,10.0,655,639,97.56,1
+"Transportation Policy & Planning Administration",487,483,99.18,20.0,96.0,483,432,89.44,1
+"FEMS-Smoke Alarms",84,0,0.0,,,0,0,,0
+SNOW,72,72,100.0,8.0,19.0,72,41,56.94,0
+"311- Emergencies",58,58,100.0,0.0,0.0,58,58,100.0,0
+FEMS,37,24,64.86,111.0,206.0,24,6,25.0,0
+"DFHV - Department of For-Hire Vehicles",17,15,88.24,14.0,20.0,15,15,100.0,0
+"FEMS-Special Events",5,4,80.0,61.0,198.0,4,0,0.0,0
